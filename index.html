@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>סוכן שטח — Field Agent Dispatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <div id="scanlines"></div>
+  <div id="app">
+    <!-- Story Screen -->
+    <div id="screen-story" class="screen active">
+      <div class="story-panel hud-border">
+        <img src="/opening-bg.png" class="story-image" alt="" />
+        <div class="story-tag">📡 INCOMING BRIEFING</div>
+        <div id="story-lines" class="story-lines"></div>
+        <button id="btn-story-continue" class="btn-primary story-continue hidden">המשך למשימה</button>
+      </div>
+    </div>
+
+    <!-- Intro Screen -->
+    <div id="screen-intro" class="screen">
+      <div class="hud-border">
+        <div class="title-block">
+          <div class="title-tag">// CLASSIFIED //</div>
+          <h1 class="game-title">סוכן שטח</h1>
+          <div class="title-sub">FIELD AGENT DISPATCH</div>
+        </div>
+        <div class="intro-form">
+          <label class="field-label">שם קוד של הסוכן:</label>
+          <input type="text" id="agent-name-input" class="field-input" placeholder="הכנס שם סוכן..." maxlength="20" dir="rtl" />
+          <div id="returning-agent-info" class="returning-info hidden"></div>
+          <button id="btn-start" class="btn-primary">התחל משימה</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- World Map Screen -->
+    <div id="screen-map" class="screen">
+      <div class="hud-top">
+        <span id="map-agent-name" class="hud-name"></span>
+        <span id="map-rank" class="hud-rank"></span>
+        <span class="hud-title">// מפת עולם //</span>
+      </div>
+      <div class="world-map">
+        <div class="map-zone" id="zone-desert" data-biome="0">
+          <div class="zone-pin">🏜️</div>
+          <div class="zone-label">
+            <div class="zone-name">מדבר</div>
+            <div class="zone-stars" id="stars-desert"></div>
+          </div>
+          <div class="zone-lock hidden">🔒</div>
+        </div>
+        <div class="map-zone" id="zone-forest" data-biome="1">
+          <div class="zone-pin">🌲</div>
+          <div class="zone-label">
+            <div class="zone-name">יער</div>
+            <div class="zone-stars" id="stars-forest"></div>
+          </div>
+          <div class="zone-lock hidden">🔒</div>
+        </div>
+        <div class="map-zone" id="zone-arctic" data-biome="2">
+          <div class="zone-pin">🧊</div>
+          <div class="zone-label">
+            <div class="zone-name">ארקטי</div>
+            <div class="zone-stars" id="stars-arctic"></div>
+          </div>
+          <div class="zone-lock hidden">🔒</div>
+        </div>
+        <div class="map-zone" id="zone-jungle" data-biome="3">
+          <div class="zone-pin">🌿</div>
+          <div class="zone-label">
+            <div class="zone-name">ג׳ונגל</div>
+            <div class="zone-stars" id="stars-jungle"></div>
+          </div>
+          <div class="zone-lock hidden">🔒</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mission Briefing Screen -->
+    <div id="screen-briefing" class="screen">
+      <div class="briefing-panel hud-border">
+        <img id="briefing-image" src="" class="story-image" alt="" />
+        <div class="briefing-header">
+          <span class="story-tag">📡 INCOMING BRIEFING</span>
+          <span id="briefing-title" class="briefing-title"></span>
+        </div>
+        <div id="briefing-lines" class="story-lines"></div>
+        <button id="btn-briefing-go" class="btn-primary story-continue hidden">התחל משימה</button>
+      </div>
+    </div>
+
+    <!-- Mission Screen -->
+    <div id="screen-mission" class="screen">
+      <div class="hud-top">
+        <span id="mission-rank" class="hud-rank"></span>
+        <span id="mission-agent" class="hud-name"></span>
+        <span id="mission-biome" class="hud-biome"></span>
+        <span id="mission-level" class="hud-level"></span>
+      </div>
+      <div class="signal-bar-wrap">
+        <span class="signal-label">עוצמת אות</span>
+        <div class="signal-bar-outer">
+          <div id="signal-bar" class="signal-bar-inner"></div>
+        </div>
+        <span id="signal-pct" class="signal-pct">100%</span>
+      </div>
+      <div class="mission-text-wrap">
+        <div class="mission-label">// הוראות משימה //</div>
+        <div id="mission-text" class="mission-text" dir="rtl"></div>
+      </div>
+      <div class="input-wrap">
+        <input type="text" id="typing-input" class="typing-input" dir="rtl" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      </div>
+      <div id="keyboard-wrap" class="keyboard-wrap"></div>
+      <div id="mission-timer" class="mission-timer">00:00</div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="screen-results" class="screen">
+      <div class="hud-top">
+        <span class="hud-title">// דו"ח משימה //</span>
+      </div>
+      <div class="results-body">
+        <div id="results-stars" class="results-stars"></div>
+        <div id="results-status" class="results-status"></div>
+        <div class="results-stats">
+          <div class="stat-row"><span class="stat-label">דיוק:</span><span id="stat-accuracy" class="stat-value"></span></div>
+          <div class="stat-row"><span class="stat-label">זמן:</span><span id="stat-time" class="stat-value"></span></div>
+          <div class="stat-row"><span class="stat-label">שגיאות:</span><span id="stat-errors" class="stat-value"></span></div>
+        </div>
+        <div id="results-unlock-msg" class="unlock-msg hidden"></div>
+        <div class="results-btns">
+          <button id="btn-next" class="btn-primary">המשימה הבאה</button>
+          <button id="btn-retry" class="btn-secondary">נסה שוב</button>
+          <button id="btn-map" class="btn-secondary">מפת עולם</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
